@@ -23,7 +23,7 @@ public class Gui {
 
 				JMenuBar menuBar = new JMenuBar();
 				frame.setJMenuBar(menuBar);
-				JButton browseBtn = new JButton("Browse...");
+				JButton browseBtn = new JButton("Import");
 				browseBtn.addActionListener(new ActionListener() {
 
 					@Override
@@ -71,7 +71,7 @@ public class Gui {
 					public void actionPerformed(ActionEvent e) {
 
 						if(d.shapes.size() != 0){
-							int confirm = JOptionPane.showConfirmDialog(frame, "Sunteti sigur ca doriti sa stergeti tot?");
+							int confirm = JOptionPane.showConfirmDialog(frame, "Stergeti toate adnotarile?");
 							if(confirm == JOptionPane.YES_OPTION){
 								d.shapes.clear();
 							}
