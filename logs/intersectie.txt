@@ -1,0 +1,1 @@
+masina, intre punctele : P1(x1= 453, y1= 303); P2(x2= 613, y2= 429)

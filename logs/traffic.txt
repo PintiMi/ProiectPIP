@@ -1,0 +1,2 @@
+moto, intre punctele : P1(x1= 342, y1= 272); P2(x2= 424, y2= 425)
+moto, intre punctele : P1(x1= 707, y1= 62); P2(x2= 762, y2= 170)
