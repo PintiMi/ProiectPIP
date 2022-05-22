@@ -26,11 +26,41 @@ public class Adnotare extends JPanel {
 	private static final long serialVersionUID = 1L;
 	ArrayList<Shape> shapes = new ArrayList<Shape>();
 	Point startDrag, endDrag;
-	private BufferedImage image;
+	BufferedImage image;
 	File selectedFile;
+	String path;
+	JFileChooser file;
 
 	public Adnotare() {
 
+		initializare();
+
+		addMouseListener(new MouseAdapter() {
+
+			public void mousePressed(MouseEvent e) {
+				startDrag = new Point(e.getX(), e.getY());
+				endDrag = startDrag;
+			}
+
+			public void mouseReleased(MouseEvent e) {
+				Shape r = makeRectangle(startDrag.x, startDrag.y, e.getX(), e.getY());
+				shapes.add(r);
+				startDrag = null;
+				endDrag = null;
+			}
+
+		});
+
+		addMouseMotionListener(new MouseMotionAdapter() {
+			public void mouseDragged(MouseEvent e) {
+				endDrag = new Point(e.getX(), e.getY());
+				repaint();
+			}
+		});
+	}
+	
+	
+	public void initializare() {
 		JFileChooser file = new JFileChooser();
 		file.setCurrentDirectory(new File(System.getProperty("user.dir")));
 
@@ -44,32 +74,8 @@ public class Adnotare extends JPanel {
 				e.printStackTrace();
 			}
 		}
-
-		addMouseListener(new MouseAdapter() {
-
-			public void mousePressed(MouseEvent e) {
-				startDrag = new Point(e.getX(), e.getY());
-				endDrag = startDrag;
-				repaint();
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				Shape r = makeRectangle(startDrag.x, startDrag.y, e.getX(), e.getY());
-				shapes.add(r);
-				startDrag = null;
-				endDrag = null;
-				repaint();
-			}
-
-		});
-
-		addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseDragged(MouseEvent e) {
-				endDrag = new Point(e.getX(), e.getY());
-				repaint();
-			}
-		});
 	}
+	
 
 	public Dimension getPreferredSize() {
 		return image == null ? new Dimension(200, 200) : new Dimension(image.getWidth(), image.getHeight());
@@ -77,21 +83,24 @@ public class Adnotare extends JPanel {
 
 	protected void paintComponent(Graphics g) {
 
-		Graphics2D g2 = (Graphics2D) g.create();
 		g.drawImage(image, 0, 0, this);
-		g2.setStroke(new BasicStroke(3f));
+		repaint();
+		((Graphics2D) g).setStroke(new BasicStroke(3f));
+
 
 		for (Shape s : shapes) {
-			g2.setPaint(Color.RED);
-			g2.draw(s);
+			((Graphics2D) g).setPaint(Color.RED);
+			((Graphics2D) g).draw(s);
+			repaint();
 		}
 
-		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.80f));
+		((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+				0.70f));
 		if (startDrag != null && endDrag != null) {
-			g2.setPaint(Color.BLACK);
-			Shape r = makeRectangle(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
-			g2.draw(r);
-			repaint();
+			((Graphics2D) g).setPaint(Color.BLACK);
+			Shape r = makeRectangle(startDrag.x, startDrag.y, endDrag.x,
+					endDrag.y);
+			((Graphics2D) g).draw(r);
 		}
 	}
 
