@@ -14,17 +14,18 @@ import javax.swing.SwingUtilities;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
+
 public class Gui {
-	
-	JFrame frame;	
-	JMenuBar menuBar;	
-	JMenu fileMenu;	
-	JMenu editMenu;
-	JMenu colorsMenu;	
-	JMenuItem browseItm;	
-	JMenuItem undoItm;	
-	JMenuItem clearItm;
-	ButtonGroup colorsGroup;
+	JFrame frame; // Fereastra grafica
+	JMenuBar menuBar; // Bara meniu	
+	JMenu fileMenu;	// Submeniu Files
+	JMenu editMenu; // Submeniu Edit (pentru undo/clear)
+	JMenu colorsMenu; // Submeniu culori (radiobuttons)
+	JMenuItem browseItm; // Buton cautare imagine
+	JMenuItem undoItm; // Buton Undo - sterge ultima adnotare grafica si ultima informatie text din fisier
+	JMenuItem clearItm; // Clear all - sterge toate adnotarile grafice si informatiile din fisier
+	ButtonGroup colorsGroup; // Grup butoane Culori
+	// Butoane de schimbare a culorii adnotarii:
 	JRadioButton redColor;
 	JRadioButton blueColor;	
 	JRadioButton greenColor;
@@ -33,6 +34,9 @@ public class Gui {
 	
 	Adnotare adnotare = new Adnotare();
 
+	/**
+	 * Constructor care genereaza "interfata" aplicatiei
+	 */
 	public Gui() {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -118,6 +122,9 @@ public class Gui {
 		orangeColor.addActionListener(actionListener);
 	}
 	
+	/**
+	 * Metoda care genereaza meniul, submeniurile si butoanele
+	 */
 	public void creareMeniuOptiuni() {
 		menuBar = new JMenuBar();
 		fileMenu = new JMenu("File");
@@ -134,6 +141,9 @@ public class Gui {
 		orangeColor = new JRadioButton("Orange");
 	}
 	
+	/**
+	 * Metoda care adauga elementele JRadioButton (pentru culori) in grup
+	 */
 	public void adaugaCuloriInButtonGroup() {
 		redColor.setSelected(true);
 		colorsGroup.add(redColor);
@@ -143,6 +153,9 @@ public class Gui {
 		colorsGroup.add(orangeColor);
 	}
 	
+	/**
+	 * Metoda de stergere a adnotarilor existente
+	 */
 	public void stergereAdnotariCurente() {
 		adnotare.listaAdnotari.clear();
 		adnotare.textsList.clear();
@@ -150,6 +163,9 @@ public class Gui {
 		adnotare.listaCulori.clear();
 	}
 	
+	/**
+	 * Metoda prin care stergem ultima forma in cazul apasarii butoanelor "cancel" sau "x"
+	 */
 	public void stergeUltimaAdnotare() {
 		int index1 = adnotare.listaAdnotari.size() - 1;
 		int index2 = adnotare.textsList.size() - 1;

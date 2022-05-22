@@ -47,13 +47,19 @@ public class Adnotare extends JPanel {
 	public Adnotare() {
 
 		addMouseListener(new MouseAdapter() {
-
+			
+			/**
+			 * Listener la apasarea primului click
+			 */
 			public void mousePressed(MouseEvent e) {
 				startDrag = new Point(e.getX(), e.getY());
 				endDrag = startDrag;
 				firstPoint = startDrag;
 			}
 
+			/**
+			 * Listener pentru eliberarea click-ului
+			 */
 			public void mouseReleased(MouseEvent e) {
 				Shape adnotare = makeRectangle(startDrag.x, startDrag.y, e.getX(), e.getY());
 				listaAdnotari.add(adnotare);
@@ -106,19 +112,32 @@ public class Adnotare extends JPanel {
 		listaCulori.remove(index3);
 	}
 	
-
+	/**
+	 * Metoda pentru redimensionarea JFrame-ului in functie de dimensiunea imaginii
+	 * @return new {@link Dimension} - dimensiunea imaginii selectate
+	 */
 	public Dimension getPreferredSize() {
 		return inputImage == null ? new Dimension(200, 200) : new Dimension(inputImage.getWidth(), inputImage.getHeight());
 	}
 
+	/**
+	 * Metoda care returneaza o forma noua (dreptunghi)
+	 * @param x1 pentru min(x1, x2) 
+	 * @param y1 pentru min(y1, y2)
+	 * @param x2 pentru abs(x1 - x2)
+	 * @param y2 pentru abs(y1 - y2)
+	 * @return new {@link Rectangle2D} - generare dreptunghi nou
+	 */
 	public Rectangle2D.Float makeRectangle(int x1, int y1, int x2, int y2) {
 		return new Rectangle2D.Float(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
 	}
 
+	/**
+	 * Metoda pentru incarcarea unei fotografii folosind JFileChooser
+	 */
 	public void incarcareImagine() {
 		fileChooser = new JFileChooser();
-		fileChooser.setCurrentDirectory(new File(System
-				.getProperty("user.dir")));
+		fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
 		int result = fileChooser.showSaveDialog(null);
 		if (result == JFileChooser.APPROVE_OPTION) {
 			selectedFile = fileChooser.getSelectedFile();
@@ -134,6 +153,9 @@ public class Adnotare extends JPanel {
 		}
 	}
 	
+	/**
+	 * Metoda prin care se realizeaza scrierea in fisier la locatia logs/imageName.txt
+	 */
 	public void writeToFile() {
 		imageName = selectedFile.getName();
 		imageName = imageName.replaceFirst("[.][^.]+$", "");
@@ -157,7 +179,11 @@ public class Adnotare extends JPanel {
 			e1.printStackTrace();
 		}	
 	}
-
+	
+	
+	/**
+	 * Partea de grafica a aplicatiei
+	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
