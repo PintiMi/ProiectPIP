@@ -16,64 +16,44 @@ import javax.swing.JRadioButton;
 
 public class Gui {
 	
-	JFrame frame;
+	JFrame frame;	
+	JMenuBar menuBar;	
+	JMenu fileMenu;	
+	JMenu editMenu;
+	JMenu colorsMenu;	
+	JMenuItem browseItm;	
+	JMenuItem undoItm;	
+	JMenuItem clearItm;
+	ButtonGroup colorsGroup;
+	JRadioButton redColor;
+	JRadioButton blueColor;	
+	JRadioButton greenColor;
+	JRadioButton yellowColor;
+	JRadioButton orangeColor;
+	JRadioButton brownColor;
+	JRadioButton pinkColor;	
+	JRadioButton cyanColor;
+	JRadioButton whiteColor;
+	JRadioButton grayColor;	
+	JRadioButton blackColor;
+	
+	Adnotare adnotare = new Adnotare();
 
 	public Gui() {
 		SwingUtilities.invokeLater(new Runnable() {
-			@Override
 			public void run() {
-
-				Adnotare adnotare = new Adnotare();
 
 				frame = new JFrame("Aplicatie de adnotari pe poze pentru construirea setului de date ML");
 				frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-				JMenuBar menuBar = new JMenuBar();
-
-				JMenu fileMenu = new JMenu("File");
-				JMenu editMenu = new JMenu("Edit");
-				JMenuItem browseItm = new JMenuItem("Import");
-				JMenuItem undoItm = new JMenuItem("Undo");
-				JMenuItem clearItm = new JMenuItem("Clear all");
-				JMenu colorsMenu = new JMenu("Colors");
 				
-				ButtonGroup colors = new ButtonGroup();
-				JRadioButton redColor = new JRadioButton("Red");
-				JRadioButton blueColor = new JRadioButton("Blue");
-				JRadioButton greenColor = new JRadioButton("Green");
-				JRadioButton yellowColor = new JRadioButton("Yellow");
-				JRadioButton orangeColor = new JRadioButton("Orange");
-				JRadioButton brownColor = new JRadioButton("Brown");
-				JRadioButton purpleColor = new JRadioButton("Purple");
-				JRadioButton pinkColor = new JRadioButton("Pink");
-				JRadioButton cyanColor = new JRadioButton("Cyan");
-				JRadioButton whiteColor = new JRadioButton("White");
-				JRadioButton grayColor = new JRadioButton("Gray");
-				JRadioButton blackColor = new JRadioButton("Black");
-
-				redColor.setSelected(true);
-				colors.add(redColor);
-				colors.add(blueColor);
-				colors.add(greenColor);
-				colors.add(yellowColor);
-				colors.add(orangeColor);
-				colors.add(brownColor);
-				colors.add(purpleColor);
-				colors.add(pinkColor);
-				colors.add(cyanColor);
-				colors.add(whiteColor);
-				colors.add(grayColor);
-				colors.add(blackColor);
+				adnotare.incarcareImagine();
+				creareMeniuOptiuni();
+				adaugaCuloriInButtonGroup();
 
 				browseItm.addActionListener(new ActionListener() {
 
-					@Override
 					public void actionPerformed(ActionEvent e) {
-
-						adnotare.listaAdnotari.clear();
-						adnotare.textsList.clear();
-						adnotare.secondPointList.clear();
-						adnotare.listaCulori.clear();
+						stergereAdnotariCurente(); 
 						adnotare.incarcareImagine();
 					}
 				});
@@ -81,194 +61,210 @@ public class Gui {
 
 				undoItm.addActionListener(new ActionListener() {
 
-					@Override
 					public void actionPerformed(ActionEvent e) {
 
 						if (adnotare.listaAdnotari.size() > 0 && adnotare.textsList.size() > 0 && adnotare.secondPointList.size() > 0) {
-							int index1 = adnotare.listaAdnotari.size() - 1;
-							int index2 = adnotare.textsList.size() - 1;
-							int index3 = adnotare.secondPointList.size() - 1;
-							int index4 = adnotare.listaCulori.size() - 1;
-							adnotare.listaAdnotari.remove(index1);
-							adnotare.textsList.remove(index2);
-							adnotare.secondPointList.remove(index3);
-							adnotare.listaCulori.remove(index4);
-
-							System.out.println("List of Shapes: " + adnotare.listaAdnotari.size() + ", List of Texts:" + adnotare.textsList.size() + ", List of Points:"
-									+ adnotare.secondPointList.size() + ", List of Colors: " + adnotare.listaCulori.size());
-							byte b;
-							long length;
-							try {
-								length = adnotare.randFile.length() - 1;
-								do {
-									length -= 1;
-									adnotare.randFile.seek(length);
-									b = adnotare.randFile.readByte();
-								} while (b != 10 && length > 0);
-								if (length == 0) {
-									adnotare.randFile.setLength(length);
-								} else {
-									adnotare.randFile.setLength(length + 1);
-								}
-							} catch (IOException e1) {
-								e1.printStackTrace();
-							}
+							stergeUltimaAdnotare();
+							System.out.println("Lista de adnotari: " + adnotare.listaAdnotari.size() + ", Lista de texte ale adnotarilor:" + adnotare.textsList.size() + ", Lista punctelor:"
+									+ adnotare.secondPointList.size() + ", Lista culorilor: " + adnotare.listaCulori.size());
 						}
 
 					}
 				});
 
 				clearItm.addActionListener(new ActionListener() {
-
-					@Override
+					
 					public void actionPerformed(ActionEvent e) {
 						if (adnotare.listaAdnotari.size() != 0) {
 							int confirm = JOptionPane.showConfirmDialog(frame, "Stergeti toate adnotarile?");
 							if (confirm == JOptionPane.YES_OPTION) {
-								adnotare.listaAdnotari.clear();
-								adnotare.textsList.clear();
-								adnotare.secondPointList.clear();
-								adnotare.listaCulori.clear();
-
-								System.out.println("List of Shapes: " + adnotare.listaAdnotari.size() + ", List of Texts:" + adnotare.textsList.size() + ", List of Points:"
-										+ adnotare.secondPointList.size() + ", List of Colors: " + adnotare.listaCulori.size());
-								try {
-									adnotare.writer = new BufferedWriter(new FileWriter(adnotare.path));
-									adnotare.writer.write("");
-									adnotare.writer.close();
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
+								stergereAdnotariCurente(); 
+								clearTextFile();
+								System.out.println("Lista de adnotari: " + adnotare.listaAdnotari.size() + ", Lista de texte ale adnotarilor:" + adnotare.textsList.size() + ", Lista punctelor:"
+										+ adnotare.secondPointList.size() + ", Lista culorilor: " + adnotare.listaCulori.size());
 							}
 						}
 						
 
 					}
-				});	
+				});
 				
-				redColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 255;
-						adnotare.culori[1] = 0;
-						adnotare.culori[2] = 0;
-					}
-				});
-
-				blueColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 0;
-						adnotare.culori[1] = 0;
-						adnotare.culori[2] = 255;
-					}
-				});
-
-				greenColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 0;
-						adnotare.culori[1] = 204;
-						adnotare.culori[2] = 0;
-					}
-				});
-
-				yellowColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 255;
-						adnotare.culori[1] = 204;
-						adnotare.culori[2] = 0;
-					}
-				});
-
-				orangeColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 255;
-						adnotare.culori[1] = 102;
-						adnotare.culori[2] = 0;
-					}
-				});
-
-				brownColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 153;
-						adnotare.culori[1] = 76;
-						adnotare.culori[2] = 0;
-					}
-				});
-
-				purpleColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 153;
-						adnotare.culori[1] = 0;
-						adnotare.culori[2] = 153;
-					}
-				});
-
-				pinkColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 255;
-						adnotare.culori[1] = 51;
-						adnotare.culori[2] = 255;
-					}
-				});
-
-				cyanColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 0;
-						adnotare.culori[1] = 255;
-						adnotare.culori[2] = 255;
-					}
-				});
-
-				whiteColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 255;
-						adnotare.culori[1] = 255;
-						adnotare.culori[2] = 255;
-					}
-				});
-
-				grayColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 192;
-						adnotare.culori[1] = 192;
-						adnotare.culori[2] = 192;
-					}
-				});
-
-				blackColor.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						adnotare.culori[0] = 0;
-						adnotare.culori[1] = 0;
-						adnotare.culori[2] = 0;
-					}
-				});
-
-
-				frame.setJMenuBar(menuBar);
-				menuBar.add(fileMenu);
-				fileMenu.add(browseItm);
-				menuBar.add(editMenu);
-				menuBar.add(colorsMenu);
-				editMenu.add(undoItm);
-				editMenu.add(clearItm);
+				adaugaListenerCulori();
+				adaugaElementeInMeniu();
 				
-				colorsMenu.add(redColor);
-				colorsMenu.add(blueColor);
-				colorsMenu.add(greenColor);
-				colorsMenu.add(yellowColor);
-				colorsMenu.add(orangeColor);
-				colorsMenu.add(brownColor);
-				colorsMenu.add(purpleColor);
-				colorsMenu.add(pinkColor);
-				colorsMenu.add(cyanColor);
-				colorsMenu.add(whiteColor);
-				colorsMenu.add(grayColor);
-				colorsMenu.add(blackColor);
-
-				frame.add(adnotare);
 				frame.pack();
 				frame.setLocationRelativeTo(null);
 				frame.setVisible(true);
 			}
 		});	
+	}
+	
+	public void adaugaElementeInMeniu() {
+		frame.setJMenuBar(menuBar);
+		menuBar.add(fileMenu);
+		menuBar.add(editMenu);
+		menuBar.add(colorsMenu);
+		fileMenu.add(browseItm);
+		editMenu.add(undoItm);
+		editMenu.add(clearItm);				
+		colorsMenu.add(redColor);
+		colorsMenu.add(blueColor);
+		colorsMenu.add(greenColor);
+		colorsMenu.add(yellowColor);
+		colorsMenu.add(orangeColor);
+		colorsMenu.add(brownColor);
+		colorsMenu.add(pinkColor);
+		colorsMenu.add(cyanColor);
+		colorsMenu.add(whiteColor);
+		colorsMenu.add(grayColor);
+		colorsMenu.add(blackColor);
+		frame.add(adnotare);
+	}
+	
+	public void adaugaListenerCulori() {
+		ColorsActionListener actionListener = new ColorsActionListener();
+		redColor.addActionListener(actionListener);
+		blueColor.addActionListener(actionListener);
+		greenColor.addActionListener(actionListener);
+		yellowColor.addActionListener(actionListener);
+		orangeColor.addActionListener(actionListener);
+		brownColor.addActionListener(actionListener);
+		pinkColor.addActionListener(actionListener);
+		cyanColor.addActionListener(actionListener);
+		whiteColor.addActionListener(actionListener);
+		grayColor.addActionListener(actionListener);
+		blackColor.addActionListener(actionListener);
+	}
+	
+	public void creareMeniuOptiuni() {
+		menuBar = new JMenuBar();
+		fileMenu = new JMenu("File");
+		editMenu = new JMenu("Edit");				
+		browseItm = new JMenuItem("Browse...");
+		undoItm = new JMenuItem("Undo");
+		clearItm = new JMenuItem("Clear all");				
+		colorsMenu = new JMenu("Colors");		
+		colorsGroup = new ButtonGroup(); 
+		redColor = new JRadioButton("Red");
+		blueColor = new JRadioButton("Blue");
+		greenColor = new JRadioButton("Green");
+		yellowColor = new JRadioButton("Yellow");
+		orangeColor = new JRadioButton("Orange");
+		brownColor = new JRadioButton("Brown");
+		pinkColor = new JRadioButton("Pink");
+		cyanColor = new JRadioButton("Cyan");
+		whiteColor = new JRadioButton("White");
+		grayColor = new JRadioButton("Gray");
+		blackColor = new JRadioButton("Black");
+	}
+	
+	public void adaugaCuloriInButtonGroup() {
+		redColor.setSelected(true);
+		colorsGroup.add(redColor);
+		colorsGroup.add(blueColor);
+		colorsGroup.add(greenColor);
+		colorsGroup.add(yellowColor);
+		colorsGroup.add(orangeColor);
+		colorsGroup.add(brownColor);
+		colorsGroup.add(pinkColor);
+		colorsGroup.add(cyanColor);
+		colorsGroup.add(whiteColor);
+		colorsGroup.add(grayColor);
+		colorsGroup.add(blackColor);
+	}
+	
+	public void stergereAdnotariCurente() {
+		adnotare.listaAdnotari.clear();
+		adnotare.textsList.clear();
+		adnotare.secondPointList.clear();
+		adnotare.listaCulori.clear();
+	}
+	
+	public void stergeUltimaAdnotare() {
+		int index1 = adnotare.listaAdnotari.size() - 1;
+		int index2 = adnotare.textsList.size() - 1;
+		int index3 = adnotare.secondPointList.size() - 1;
+		int index4 = adnotare.listaCulori.size() - 1;
+		adnotare.listaAdnotari.remove(index1);
+		adnotare.textsList.remove(index2);
+		adnotare.secondPointList.remove(index3);
+		adnotare.listaCulori.remove(index4);
+
+		
+		byte b;
+		long length;
+		try {
+			length = adnotare.randFile.length() - 1;
+			do {
+				length -= 1;
+				adnotare.randFile.seek(length);
+				b = adnotare.randFile.readByte();
+			} while (b != 10 && length > 0);
+			if (length == 0) {
+				adnotare.randFile.setLength(length);
+			} else {
+				adnotare.randFile.setLength(length + 1);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void clearTextFile() {
+		try {
+			adnotare.writer = new BufferedWriter(new FileWriter(adnotare.path));
+			adnotare.writer.write("");
+			adnotare.writer.close();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+	
+	public void schimbaCuloare(int r, int g, int b){
+		adnotare.culori[0] = r;
+		adnotare.culori[1] = g;
+		adnotare.culori[2] = b;
+	}
+	
+	class ColorsActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent event) {
+            JRadioButton button = (JRadioButton) event.getSource();
+            if (button == redColor) {
+            	schimbaCuloare(255, 0, 0);
+                System.out.println ( "Selected color: red" );
+            } else if (button == blueColor) {
+            	schimbaCuloare(0, 0, 255);
+                System.out.println ( "Selected color: blue" );
+            } else if (button == greenColor) {
+            	schimbaCuloare(0, 204, 0);
+                System.out.println ( "Selected color: green" );
+            } else if (button == yellowColor) {
+            	schimbaCuloare(255, 204, 0);
+                System.out.println ( "Selected color: yellow" );
+            } else if (button == orangeColor) {
+            	schimbaCuloare(255, 102, 0);
+                System.out.println ( "Selected color: orange" );
+            } else if (button == brownColor) {
+            	schimbaCuloare(153, 76, 0);
+                System.out.println ( "Selected color: brown" );
+            } else if (button == pinkColor) {
+            	schimbaCuloare(255, 51, 255);
+                System.out.println ( "Selected color: pink" );
+            } else if (button == cyanColor) {
+            	schimbaCuloare(0, 255, 255);
+                System.out.println ( "Selected color: cyan" );
+            } else if (button == whiteColor) {
+            	schimbaCuloare(255, 255, 255);
+                System.out.println ( "Selected color: white" );
+            } else if (button == grayColor) {
+            	schimbaCuloare(192, 192, 192);
+                System.out.println ( "Selected color: gray" );
+            } else if (button == blackColor) {
+            	schimbaCuloare(0, 0, 0);
+                System.out.println ( "Selected color: black" );
+            }
+
+        }
 	}
 } 

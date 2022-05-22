@@ -46,8 +46,6 @@ public class Adnotare extends JPanel {
 
 	public Adnotare() {
 
-		incarcareImagine();
-
 		addMouseListener(new MouseAdapter() {
 
 			public void mousePressed(MouseEvent e) {
@@ -73,12 +71,7 @@ public class Adnotare extends JPanel {
 					String input = JOptionPane.showInputDialog("Ce reprezinta adnotarea?");
 					if (input == null) {
 						loop = false;
-						int index = listaAdnotari.size() - 1;
-						int index2 = secondPointList.size() - 1;
-						int index3 = listaCulori.size() - 1;
-						listaAdnotari.remove(index);
-						secondPointList.remove(index2);
-						listaCulori.remove(index3);
+						removeLastElement();
 					}
 					else {
 						if (input.length() > 0) {
@@ -86,30 +79,7 @@ public class Adnotare extends JPanel {
 							loop = false;							
 							textAdnotare = input;
 
-							String t = drawingText(textAdnotare);
-							textsList.add(t);				
-
-							imageName = selectedFile.getName();
-							imageName = imageName.replaceFirst("[.][^.]+$", "");
-							path = "logs/" + imageName + ".txt";
-							info = textAdnotare + ", intre punctele : P1(x1= "
-									+ firstPoint.x + ", y1= " + firstPoint.y
-									+ ")" + "; P2(x2= " + secondPoint.x
-									+ ", y2= " + secondPoint.y + ")";
-
-							System.out.println(imageName + ": " + textAdnotare + ", intre punctele: P1 (x1 = " + firstPoint.getX() + ", y1 = " + firstPoint.getY()
-							+ ")" + " si P2 (x2 = " + secondPoint.getX() + ", y2 = " + secondPoint.getY() + ")");
-							System.out.println("-----");
-
-							try {								
-								writer = new BufferedWriter(new FileWriter(path, true));
-								writer.write(info);
-								writer.newLine();
-								writer.close();
-								randFile = new RandomAccessFile(path, "rw");
-							} catch (IOException e1) {
-								e1.printStackTrace();
-							}	
+							writeToFile();
 						}
 					}
 				}
@@ -126,6 +96,15 @@ public class Adnotare extends JPanel {
 		});
 	}
 	
+	public void removeLastElement(){
+		int index = listaAdnotari.size() - 1;
+		int index2 = secondPointList.size() - 1;
+		int index3 = listaCulori.size() - 1;
+		listaAdnotari.remove(index);
+		secondPointList.remove(index2);
+		listaCulori.remove(index3);
+	}
+	
 
 	public Dimension getPreferredSize() {
 		return inputImage == null ? new Dimension(200, 200) : new Dimension(inputImage.getWidth(), inputImage.getHeight());
@@ -133,14 +112,6 @@ public class Adnotare extends JPanel {
 
 	private Rectangle2D.Float makeRectangle(int x1, int y1, int x2, int y2) {
 		return new Rectangle2D.Float(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
-	}
-	
-	public String drawingText(String drawText) {
-		return new String(drawText);
-	}
-
-	public Color setnewColor(int r, int g, int b) {
-		return new Color(r, g, b);
 	}
 
 	public void incarcareImagine() {
@@ -161,6 +132,33 @@ public class Adnotare extends JPanel {
 			System.exit(0);
 		}
 	}
+	
+	public void writeToFile() {
+		String t = new String(textAdnotare);
+		textsList.add(t);				
+
+		imageName = selectedFile.getName();
+		imageName = imageName.replaceFirst("[.][^.]+$", "");
+		path = "logs/" + imageName + ".txt";
+		info = textAdnotare + ", intre punctele : P1(x1= "
+				+ firstPoint.x + ", y1= " + firstPoint.y
+				+ ")" + "; P2(x2= " + secondPoint.x
+				+ ", y2= " + secondPoint.y + ")";
+
+		System.out.println(imageName + ": " + textAdnotare + ", intre punctele: P1 (x1 = " + firstPoint.getX() + ", y1 = " + firstPoint.getY()
+		+ ")" + " si P2 (x2 = " + secondPoint.getX() + ", y2 = " + secondPoint.getY() + ")");
+		System.out.println("-----");
+
+		try {								
+			writer = new BufferedWriter(new FileWriter(path, true));
+			writer.write(info);
+			writer.newLine();
+			writer.close();
+			randFile = new RandomAccessFile(path, "rw");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}	
+	}
 
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -178,7 +176,7 @@ public class Adnotare extends JPanel {
 			g2d.draw(listaAdnotari.get(i));
 			for (int j = 0; j < textsList.size(); j++) {
 				if (textAdnotare != null) {
-					Font font = new Font("TimesRoman", Font.ITALIC | Font.BOLD, 15);
+					Font font = new Font("Helvetica", Font.ITALIC | Font.BOLD, 15);
 					g2d.setPaint(listaCulori.get(j));
 					g2d.setFont(font);
 					g2d.drawString(textsList.get(j), secondPointList.get(j).x + 5, secondPointList.get(j).y + 15);
