@@ -1,9 +1,9 @@
 package classes;
 
-import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -28,6 +28,9 @@ public class Adnotare extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	ArrayList<Shape> listaAdnotari = new ArrayList<Shape>();
+	ArrayList<String> textsList = new ArrayList<String>();
+	ArrayList<Point> secondPointList = new ArrayList<Point>();
+	ArrayList<Color> listaCulori = new ArrayList<Color>();
 	Point startDrag, endDrag;
 	BufferedImage inputImage;
 	File selectedFile;
@@ -39,6 +42,7 @@ public class Adnotare extends JPanel {
 	String path, imageName, info;
 	Graphics2D g2d;
 	BufferedWriter writer = null;
+	public int culori[] = { 255, 0, 0 };
 
 	public Adnotare() {
 
@@ -58,8 +62,11 @@ public class Adnotare extends JPanel {
 				startDrag = null;
 				endDrag = null;
 				
-				secondPoint = new Point(e.getX(), e.getY());								
-				textAdnotare = null;
+				secondPoint = new Point(e.getX(), e.getY());
+				secondPointList.add(secondPoint);
+				
+				Color c = new Color(culori[0], culori[1], culori[2]);
+				listaCulori.add(c);
 
 				boolean loop=true;
 				while (loop) {
@@ -67,7 +74,11 @@ public class Adnotare extends JPanel {
 					if (input == null) {
 						loop = false;
 						int index = listaAdnotari.size() - 1;
+						int index2 = secondPointList.size() - 1;
+						int index3 = listaCulori.size() - 1;
 						listaAdnotari.remove(index);
+						secondPointList.remove(index2);
+						listaCulori.remove(index3);
 					}
 					else {
 						if (input.length() > 0) {
@@ -75,10 +86,8 @@ public class Adnotare extends JPanel {
 							loop = false;							
 							textAdnotare = input;
 
-							System.out.println("P1 (x1 = " + firstPoint.getX() + ", y1 = " + firstPoint.getY() + ")");
-							System.out.println("P2 (x2 = " + secondPoint.getX() + ", y2 = " + secondPoint.getY() + ")");
-							System.out.println(textAdnotare);
-							System.out.println("-----");				
+							String t = drawingText(textAdnotare);
+							textsList.add(t);				
 
 							imageName = selectedFile.getName();
 							imageName = imageName.replaceFirst("[.][^.]+$", "");
@@ -88,7 +97,11 @@ public class Adnotare extends JPanel {
 									+ ")" + "; P2(x2= " + secondPoint.x
 									+ ", y2= " + secondPoint.y + ")";
 
-							try {
+							System.out.println(imageName + ": " + textAdnotare + ", intre punctele: P1 (x1 = " + firstPoint.getX() + ", y1 = " + firstPoint.getY()
+							+ ")" + " si P2 (x2 = " + secondPoint.getX() + ", y2 = " + secondPoint.getY() + ")");
+							System.out.println("-----");
+
+							try {								
 								writer = new BufferedWriter(new FileWriter(path, true));
 								writer.write(info);
 								writer.newLine();
@@ -121,6 +134,14 @@ public class Adnotare extends JPanel {
 	private Rectangle2D.Float makeRectangle(int x1, int y1, int x2, int y2) {
 		return new Rectangle2D.Float(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
 	}
+	
+	public String drawingText(String drawText) {
+		return new String(drawText);
+	}
+
+	public Color setnewColor(int r, int g, int b) {
+		return new Color(r, g, b);
+	}
 
 	public void incarcareImagine() {
 		fileChooser = new JFileChooser();
@@ -145,30 +166,31 @@ public class Adnotare extends JPanel {
 		super.paintComponent(g);
 
 		g2d = (Graphics2D) g.create();
-		repaint();
+
 		if (inputImage != null) {
 			g2d.drawImage(inputImage, 0, 0, this);
-			g2d.setColor(Color.RED);
 		}
-		g2d.dispose();
-
-		((Graphics2D) g).setStroke(new BasicStroke(3f));
 		
-		for (Shape s : listaAdnotari) {
-			((Graphics2D) g).setPaint(Color.RED);
-			((Graphics2D) g).draw(s);
-			if (textAdnotare != null) {
-				g.drawString(textAdnotare, secondPoint.x, secondPoint.y + 15);
+		g2d.setStroke(new BasicStroke(3f));
+
+		for (int i = 0; i < listaAdnotari.size(); i++) {
+			g2d.setPaint(listaCulori.get(i));
+			g2d.draw(listaAdnotari.get(i));
+			for (int j = 0; j < textsList.size(); j++) {
+				if (textAdnotare != null) {
+					Font font = new Font("TimesRoman", Font.ITALIC | Font.BOLD, 15);
+					g2d.setPaint(listaCulori.get(j));
+					g2d.setFont(font);
+					g2d.drawString(textsList.get(j), secondPointList.get(j).x + 5, secondPointList.get(j).y + 15);
+				}
 			}
-			repaint();
 		}
 
-		((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.70f));
 		if (startDrag != null && endDrag != null) {
-			((Graphics2D) g).setPaint(Color.BLACK);
-			Shape r = makeRectangle(startDrag.x, startDrag.y, endDrag.x,
-					endDrag.y);
-			((Graphics2D) g).draw(r);
+			g2d.setPaint(Color.BLACK);
+			Shape r = makeRectangle(startDrag.x, startDrag.y, endDrag.x, endDrag.y);
+			g2d.draw(r);
 		}
+		repaint();
 	}
 }
