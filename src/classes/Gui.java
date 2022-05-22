@@ -30,12 +30,6 @@ public class Gui {
 	JRadioButton greenColor;
 	JRadioButton yellowColor;
 	JRadioButton orangeColor;
-	JRadioButton brownColor;
-	JRadioButton pinkColor;	
-	JRadioButton cyanColor;
-	JRadioButton whiteColor;
-	JRadioButton grayColor;	
-	JRadioButton blackColor;
 	
 	Adnotare adnotare = new Adnotare();
 
@@ -112,12 +106,6 @@ public class Gui {
 		colorsMenu.add(greenColor);
 		colorsMenu.add(yellowColor);
 		colorsMenu.add(orangeColor);
-		colorsMenu.add(brownColor);
-		colorsMenu.add(pinkColor);
-		colorsMenu.add(cyanColor);
-		colorsMenu.add(whiteColor);
-		colorsMenu.add(grayColor);
-		colorsMenu.add(blackColor);
 		frame.add(adnotare);
 	}
 	
@@ -128,12 +116,6 @@ public class Gui {
 		greenColor.addActionListener(actionListener);
 		yellowColor.addActionListener(actionListener);
 		orangeColor.addActionListener(actionListener);
-		brownColor.addActionListener(actionListener);
-		pinkColor.addActionListener(actionListener);
-		cyanColor.addActionListener(actionListener);
-		whiteColor.addActionListener(actionListener);
-		grayColor.addActionListener(actionListener);
-		blackColor.addActionListener(actionListener);
 	}
 	
 	public void creareMeniuOptiuni() {
@@ -150,12 +132,6 @@ public class Gui {
 		greenColor = new JRadioButton("Green");
 		yellowColor = new JRadioButton("Yellow");
 		orangeColor = new JRadioButton("Orange");
-		brownColor = new JRadioButton("Brown");
-		pinkColor = new JRadioButton("Pink");
-		cyanColor = new JRadioButton("Cyan");
-		whiteColor = new JRadioButton("White");
-		grayColor = new JRadioButton("Gray");
-		blackColor = new JRadioButton("Black");
 	}
 	
 	public void adaugaCuloriInButtonGroup() {
@@ -165,12 +141,6 @@ public class Gui {
 		colorsGroup.add(greenColor);
 		colorsGroup.add(yellowColor);
 		colorsGroup.add(orangeColor);
-		colorsGroup.add(brownColor);
-		colorsGroup.add(pinkColor);
-		colorsGroup.add(cyanColor);
-		colorsGroup.add(whiteColor);
-		colorsGroup.add(grayColor);
-		colorsGroup.add(blackColor);
 	}
 	
 	public void stergereAdnotariCurente() {
@@ -245,26 +215,7 @@ public class Gui {
             } else if (button == orangeColor) {
             	schimbaCuloare(255, 102, 0);
                 System.out.println ( "Selected color: orange" );
-            } else if (button == brownColor) {
-            	schimbaCuloare(153, 76, 0);
-                System.out.println ( "Selected color: brown" );
-            } else if (button == pinkColor) {
-            	schimbaCuloare(255, 51, 255);
-                System.out.println ( "Selected color: pink" );
-            } else if (button == cyanColor) {
-            	schimbaCuloare(0, 255, 255);
-                System.out.println ( "Selected color: cyan" );
-            } else if (button == whiteColor) {
-            	schimbaCuloare(255, 255, 255);
-                System.out.println ( "Selected color: white" );
-            } else if (button == grayColor) {
-            	schimbaCuloare(192, 192, 192);
-                System.out.println ( "Selected color: gray" );
-            } else if (button == blackColor) {
-            	schimbaCuloare(0, 0, 0);
-                System.out.println ( "Selected color: black" );
-            }
-
+            } 
         }
 	}
 } 

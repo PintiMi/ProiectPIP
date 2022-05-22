@@ -27,14 +27,14 @@ import javax.swing.JPanel;
 public class Adnotare extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-	ArrayList<Shape> listaAdnotari = new ArrayList<Shape>();
-	ArrayList<String> textsList = new ArrayList<String>();
-	ArrayList<Point> secondPointList = new ArrayList<Point>();
-	ArrayList<Color> listaCulori = new ArrayList<Color>();
+	public ArrayList<Shape> listaAdnotari = new ArrayList<Shape>();
+	public ArrayList<String> textsList = new ArrayList<String>();
+	public ArrayList<Point> secondPointList = new ArrayList<Point>();
+	public ArrayList<Color> listaCulori = new ArrayList<Color>();
 	Point startDrag, endDrag;
-	BufferedImage inputImage;
+	public BufferedImage inputImage;
 	File selectedFile;
-	String imagePath;
+	public String imagePath;
 	Point firstPoint = null, secondPoint = null;
 	JFileChooser fileChooser;
 	String textAdnotare;
@@ -78,7 +78,8 @@ public class Adnotare extends JPanel {
 
 							loop = false;							
 							textAdnotare = input;
-
+							String t = new String(textAdnotare);
+							textsList.add(t);
 							writeToFile();
 						}
 					}
@@ -110,7 +111,7 @@ public class Adnotare extends JPanel {
 		return inputImage == null ? new Dimension(200, 200) : new Dimension(inputImage.getWidth(), inputImage.getHeight());
 	}
 
-	private Rectangle2D.Float makeRectangle(int x1, int y1, int x2, int y2) {
+	public Rectangle2D.Float makeRectangle(int x1, int y1, int x2, int y2) {
 		return new Rectangle2D.Float(Math.min(x1, x2), Math.min(y1, y2), Math.abs(x1 - x2), Math.abs(y1 - y2));
 	}
 
@@ -134,9 +135,6 @@ public class Adnotare extends JPanel {
 	}
 	
 	public void writeToFile() {
-		String t = new String(textAdnotare);
-		textsList.add(t);				
-
 		imageName = selectedFile.getName();
 		imageName = imageName.replaceFirst("[.][^.]+$", "");
 		path = "logs/" + imageName + ".txt";

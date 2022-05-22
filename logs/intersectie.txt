@@ -1,2 +1,4 @@
 masina, intre punctele : P1(x1= 453, y1= 303); P2(x2= 613, y2= 429)
 masina, intre punctele : P1(x1= 478, y1= 308); P2(x2= 597, y2= 427)
+masina rosie, intre punctele : P1(x1= 325, y1= 574); P2(x2= 461, y2= 724)
+masina gri, intre punctele : P1(x1= 463, y1= 296); P2(x2= 595, y2= 423)
